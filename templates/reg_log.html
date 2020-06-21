@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+/* 改写父模板的样式 */
+#main{ padding: 0; margin: auto; width: 0; }
+
+/* 子模版样式 */
+*{ margin: 0; padding: 0; text-decoration: none;
+    font-family: montserrat; box-sizing: border-box; }
+}
+
+body{ min-height: 100vh; background-image: linear-gradient(120deg, #3498db, #8e44ad); }
+
+.log_reg_form{ width: 360px; height: 580px;
+    background-color: #f1f1f1;
+    padding: 80px 40px; margin-top: 30px;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.log_reg_form h1{ text-align: center; margin-bottom: 60px; }
+
+.log_reg_btn{ display: block;
+    width: 100%; height: 50px;
+    border: none; color: #fff;
+    background: linear-gradient(120deg, #3498db, #8e44ad);
+    background-size: 200%;
+    outline: none; cursor: pointer;
+    transition: .5s;
+}
+
+.log_reg_btn:hover{ background-position: right; }
+
+.bottom-text{ margin-top: 60px; text-align: center; font-size: 18px; }
+
+.txtb{ border-bottom: 2px solid #adadad;
+    position: relative; margin: 30px 0; }
+
+.txtb input{ font-size: 16px; color: #333; border: none;
+    width: 100%; height: 40px; outline: none;
+    background: none; padding: 0 5px; }
+
+.txtb span::before{ content: attr(data-placeholder);
+    position: absolute;
+    top: 50%; left: 5px; color: #adadad;
+    transform: translateY(-50%);
+    z-index: -1; transition: .5s; }
+
+.txtb span::after{ top: 100%; left: 0; content: '';
+    position: absolute;
+    width: 100%; height: 2px;
+    background: linear-gradient(120deg, #3498db, #8e44ad);
+    transition: .5s; }
+
+.focus+span::before{ top: -5px; }
+
+.focus+span::after{ width: 100%; }
+
+#done_text_0{ display: none; }
+
+#done_text_-1{ display: none; }
+
+#done_text_2{ display: none; }
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+<form class="log_reg_form">
+    <h1>Әкімшілік бетке кіру</h1>
+    <div class="txtb">
+        <input id="name" type="text">
+        <span data-placeholder="Қолданушы аты"></span>
+    </div>
+    <div class="txtb">
+        <input id="pwd" type="password">
+        <span data-placeholder="Құпия сөз"></span>
+    </div>
+    <input type="submit" class="log_reg_btn" value="Кіру">
+    <div class="bottom-text">
+        <p id="done_text_0" class="error">
+            <span>Құпия сөз қате!</span>
+            <span class="glyphicon glyphicon-remove"></span>
+        </p>
+        <p id="done_text_-1" class="error">
+            <span>Тіркелмеген!</span>
+            <span class="glyphicon glyphicon-remove"></span>
+        </p>
+        <p id="done_text_2" class="error">
+            <span>Ақпарат толық емес!</span>
+            <span class="glyphicon glyphicon-remove"></span>
+        </p>
+    </div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script>
+// 输入框动态效果
+    $(".txtb input").on("focus", function(){
+        $(this).addClass("focus");
+    });
+
+    $(".txtb input").on("blur", function(){
+        if ($(this).val() == ""){ $(this).removeClass("focus"); }
+    });
+
+// 登录
+$(document).ready(function(){
+    $(".log_reg_form").on("submit", function(event){
+        $.ajax({
+            data : {
+                name : $("#name").val(),
+                pwd : $("#pwd").val()
+            },
+            type : "POST",
+            url : "/log"
+        })
+        .done(function(data){
+            done_texts = ["#done_text_0", "#done_text_-1", "#done_text_2"];
+
+            if (data.result == 0){
+                $("#done_text_0").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#done_text_0")];
+                for (var i in done_texts){
+                    $(done_texts[i]).css("display", "none");
+                }
+            }
+            else if (data.result == -1){
+                $("#done_text_-1").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#done_text_-1")];
+                for (var i in done_texts){
+                    $(done_texts[i]).css("display", "none");
+                }
+            }
+            else if (data.result == 2){
+                $("#done_text_2").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#done_text_2")];
+                for (var i in done_texts){
+                    $(done_texts[i]).css("display", "none");
+                }
+            }
+            else{
+                /* 后台自动跳转 */
+            }
+        })
+        event.preventDefault();
+    });
+});
+
+</script>
+{% endblock %}

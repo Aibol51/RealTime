@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="Shop">
+    <meta name="author" content="Yernar.T">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/logo.ico') }}"/>
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <title>Real Time</title>
+
+
+    <style>
+/* 所有css文件通用的样式 */
+        ul{ list-style: none; }
+
+        .success{ color: green; }
+
+        .error{ color: red; }
+
+/* 当前css文件用的样式 */
+#main{ padding: 1%;
+    margin: auto; width: 84%;
+    background-color: white; }
+
+body{ background-color: aliceblue; }
+
+#logo img{ width: 50px;
+    margin: 0; padding: 0px;
+    position: relative; bottom: 15px; }
+
+.logo_active{ background: aliceblue; border-style: double; }
+
+    </style>
+    {% block head %} {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand {% if request.endpoint == 'home_blue.reg_log' %} logo_active {% endif %}"
+               id="logo"
+               href="{% if request.endpoint == 'home_blue.reg_log' %} {{ url_for('home_blue.index') }}
+               {% else %} {{ url_for('home_blue.reg_log') }} {% endif %}">
+                <img class="img-rounded" src="{{ url_for('static', filename='img/logo.png') }}" alt="logo">
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="{% if request.endpoint == 'home_blue.about' %} active {% endif %}">
+                    <a href="{{ url_for('home_blue.about') }}">Біз туралы</a>
+                </li>
+                <li class="dropdown {% if request.endpoint == 'home_blue.index' %} active
+                {% elif request.endpoint == 'home_blue.detail' %} active {% endif %}">
+                    <a href="{{ url_for('home_blue.index') }}">Заттар</a>
+<!--                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"-->
+<!--                       aria-expanded="false">Заттар <span class="caret"></span></a>-->
+<!--                    <ul class="dropdown-menu">-->
+<!--                        <li><a href="#">分类1</a></li>-->
+<!--                        <li><a href="#">分类2</a></li>-->
+<!--                        <li><a href="#">分类3</a></li>-->
+<!--                        <li role="separator" class="divider"></li>-->
+<!--                        <li><a href="#">所有</a></li>-->
+<!--                    </ul>-->
+                </li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Зат атуы...">
+                </div>
+                <button type="submit" class="btn btn-default">Іздеу</button>
+            </form>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div id="main">{% block body %} {% endblock %}</div>
+{% block js %} {% endblock %}
+</body>
+</html>

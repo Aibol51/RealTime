@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+#item-info li{ line-height: 37px; font-size: 20px; }
+
+#view_num{ font-size: 14px; }
+
+#myModalLabel{ font-style: oblique; text-align: center; }
+
+#total{ width: 50px; text-align: center; margin-right: 5px; }
+
+#done_text_1{  float: left; display: none; }
+
+#done_text_0{  float: left; display: none; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-xs-12 text-center">
+            <h1>Мазмұны</h1>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+        <div class="col-md-4 col-xs-12">
+            <a target="_blank" href="{{ url_for('static', filename='img/default_item.png') }}">
+                <img class="img-thumbnail" src="{{ url_for('static', filename='img/default_item.png') }}"
+                     alt="item-img">
+            </a>
+        </div>
+        <div class="col-md-8 col-xs-12">
+            <ul id="item-info">
+                <li>Aтуы: 商品名称</li>
+                <li>Бағасы: 999￥</li>
+                <li id="max_total">Қалған саны: 35</li>
+                <li>
+                    <span>Енгізілген уақыт: 2 күн бұрын&nbsp;</span>
+                    <span id="view_num" class="glyphicon glyphicon-eye-open">104</span>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                        Заказ беру
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <form id="seed_request">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h2 class="modal-title" id="myModalLabel">Заказ беру</h2>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div style="overflow: scroll; white-space: initial; word-break: normal;"
+                                                 class="col-sm-12">
+
+                                                <div class="form-group">
+                                                    <label for="contact">Хабарласу ақпарат</label>
+                                                    <input type="text" class="form-control" id="contact"
+                                                           placeholder="Tел. нөмер / Instagram / Wechat ID">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="total">Мөлшері</label>
+                                                    <input type="text" id="total"
+                                                           value="1">
+
+                                                    <a href="javascript:;" onclick="change_total('less')">
+                                                        <span class="glyphicon glyphicon-minus"></span>
+                                                    </a>
+                                                    <span class="glyphicon glyphicon-italic"></span>
+                                                    <a href="javascript:;" onclick="change_total('add')">
+                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> <!-- model body -->
+                                    <div class="modal-footer">
+                                        <p id="done_text_1" class="success">
+                                            <span>Өтініш сәтті жіберілді!</span>
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </p>
+                                        <p id="done_text_0" class="error">
+                                            <span>Ақпарат толық емес!</span>
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </p>
+                                        <input type="submit" class="btn btn-info" value="Заказ беру">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Жабу</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div> <!-- modal fade, id=myModal -->
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// 增加, 减少 产品数量
+function change_total(method){
+    var total = parseInt($("#total").val());
+
+    if (method == "less"){
+        if (total == 1){ alert("Ең аз мөлшер"); }
+        else{
+            total--;
+            $("#total").val(total);
+        }
+     }
+    else{
+        var max_total = $("#max_total").text();
+        max_total = parseInt(max_total.slice(max_total.lastIndexOf(" ")));
+        if (total == max_total){ alert("Ең көп мөлшер"); }
+        else{
+            total++;
+            $("#total").val(total);
+        }
+     }
+}
+
+// 提交申请
+$(document).ready(function(){
+    $("#seed_request").on("submit", function(event){
+        $.ajax({
+            data : {
+                contact : $("#contact").val(),
+                total : $("#total").val()
+            },
+            type : "POST",
+            url : "/seed_request"
+        })
+        .done(function(data){
+            if (data.result == 1){
+                $("#done_text_1").css("display", "inline");
+                $("#done_text_0").css("display", "none");
+                }
+            else{
+                $("#done_text_1").css("display", "none");
+                $("#done_text_0").css("display", "inline");
+                }
+        })
+        event.preventDefault();
+    });
+});
+</script>
+{% endblock %}
