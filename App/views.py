@@ -61,7 +61,8 @@ def log():
             if aes_encrypt.decrypt(admin.password).decode() == pwd:
                 session['admin_login'] = admin.id
                 session.permanent = True  # 浏览器关闭也不会影响登陆状态, 默认31天;
-                return redirect(url_for('home_blue.admin'))
+                # return redirect(url_for('home_blue.admin'))
+                result = 1
             else: # 密码错误
                 result = 0
         else: # 账户不存在
@@ -83,7 +84,7 @@ def log():
 def admin_logout():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     admin.login_time = str(datetime.now())[:str(datetime.now()).rfind('.'):]
-    db.session.commit(); session.pop('user_login');
+    db.session.commit(); session.pop('admin_login');
 
     return redirect(url_for('home_blue.index'))
 
@@ -91,4 +92,4 @@ def admin_logout():
 @adminLogRequired
 def admin():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
-    return 'Admin Page'
+    return render_template('admin/index.html', admin=admin)

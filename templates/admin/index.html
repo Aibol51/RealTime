@@ -1,11 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Admin index page!</h1>
-<h1>Hi {{ admin.name }}</h1>
-</body>
-</html>
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<style>
+.info{ text-indent:50px; white-space: pre-wrap; }
+
+#dev-info{ overflow: auto; }
+
+#dev-info img { width: 120px; }
+
+#dev-info ul li{ line-height: 30px; }
+
+#dev-info a:hover{ text-decoration: none; }
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="jumbotron">
+    <h1>Hello, <a href="#profile">{{ admin.name }}</a>!</h1>
+    <p class="info">这里是网站的管理员界面, 管理员界面是主要管理视图。通过此界面, 管理员(Admin)可管理用户, 设置和分配资源, 以及定义权限和访问级别.
+
+        顶部导航栏左侧: 是返回主界面的按钮, 切换主界面与此页面(不必每次输入管理员的账号密码);
+
+        底部导航栏右侧: 是个人面板, 显示管理员的头像, 当鼠标悬浮在上方时显示上次登录时间, 以便确认是否是本人操作。 点击此按钮弹出下拉菜单, 菜单有以下几种功能:
+        1.进入个人界面; 2. 进入帮助界面; 3.退出当前管理员账号;
+
+        左侧导航栏: 1.主页(当前页面);
+        2.商品界面(对商品进行增删改查工作);
+        3.订单(查看并处理订单);
+        4.公司介绍(修改公司介绍);
+
+        以上就是对管理员界面简单的介绍 ヾ(•ω•`)o
+        祝工作顺利 (ง •_•)ง
+    </p>
+
+    <p>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">联系开发者</button>
+    </p>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 class="modal-title text-center" id="myModalLabel">联系方式</h2>
+                </div>
+                <div modal-body>
+                    <div class="row">
+                        <div id="dev-info" class="col-sm-12">
+                            <ul>
+                                <li><span class="glyphicon glyphicon-earphone"></span>&nbsp;&nbsp;Phone(Whatsapp):
+                                    <a href="https://wa.me/87009595936">+7700-95-95-936</a>
+                                </li>
+                                <li><span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;地址: Nur-Sultan</li>
+                                <li><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Email: <a
+                                        href="mailto:toktaryernar@gmail.com">toktaryernar@gmail.com</a></li>
+                                <li>
+                                    <hr>
+                                </li>
+                                <li>
+                                    <span class="glyphicon glyphicon-qrcode"></span>&nbsp;&nbsp;微信&nbsp;
+                                    <a href="{{ url_for('static', filename='img/dev-wx.jpeg') }}">
+                                        <img src="{{ url_for('static', filename='img/dev-wx.jpeg') }}" alt="wx_qrcode">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div> <!-- modal fade, id=myModal -->
+</div>
+{% endblock %}

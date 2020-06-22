@@ -12,5 +12,5 @@ def adminLogRequired(func):
         if session.get('admin_login'):
             return func(*args, **kwargs)
         else:
-            return redirect(url_for('log'))
+            return redirect(url_for('home_blue.reg_log'))
     return wrapper
