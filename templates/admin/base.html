@@ -22,6 +22,8 @@
 
         .error{ color: red; }
 
+        .first-box{ margin-top: 25px; }
+
 /* 当前css文件用的样式 */
         .main{ float: none; top: 10px; }
 
@@ -63,7 +65,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="#profile">个人页面</a></li>
+                        <li><a href="{{ url_for('home_blue.admin_profile') }}">个人页面</a></li>
                         <li><a href="#help">帮助</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url_for('home_blue.admin_logout') }}">退出</a></li>
@@ -259,8 +261,7 @@
 <script>
 $(document).ready(function(){
 
-    });
-
+});
 </script>
 {% endblock %}
 </body>

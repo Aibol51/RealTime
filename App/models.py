@@ -6,8 +6,8 @@ from datetime import datetime
 class Admin(db.Model):
     __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(64), nullable=False, unique=True)
-    password = db.Column(db.String(108), nullable=False)
+    name = db.Column(db.String(32), nullable=False, unique=True)
+    password = db.Column(db.String(64), nullable=False)
     avator = db.Column(db.String(64), default='img/default_avator.png')
     create_time = db.Column(db.String(32), nullable=False,
                             default=str(datetime.now())[:str(datetime.now()).rfind('.'):])

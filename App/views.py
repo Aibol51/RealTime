@@ -17,6 +17,11 @@ home_blue = Blueprint('home_blue', __name__, template_folder='../templates', sta
 def init_home_blue(app):
     app.register_blueprint(blueprint=home_blue)
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#           ↓ User 页面 ↓             #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 @home_blue.route('/')
 def index():
@@ -48,6 +53,12 @@ def seed_request():
 
     return jsonify({'result': result})
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#            ↓ 公共区域 ↓              #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
 @home_blue.route('/log', methods=['POST'])
 def log():
     name = request.form.get('name')
@@ -72,6 +83,25 @@ def log():
 
     return jsonify({'result': result})
 
+@logRequired
+@home_blue.route('/change_name', methods=['POST'])
+def change_name():
+    admin = Admin.query.filter(Admin.name == request.form.get('old_name')).first()
+    result = 0
+
+    if request.form.get('old_name'):
+        if detection('name', request.form.get('new_name')):
+            admin.name = request.form.get('new_name')
+            db.session.commit()
+            result = 1
+        else:
+            # 无效用户名(不符合命名规范)
+            result = 0
+    else: # 无效用户名(为空)
+        result = 0
+
+    return jsonify({'result': result})
+
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -79,8 +109,8 @@ def log():
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
-@home_blue.route('/admin_logout')
 @adminLogRequired
+@home_blue.route('/admin_logout')
 def admin_logout():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     admin.login_time = str(datetime.now())[:str(datetime.now()).rfind('.'):]
@@ -88,8 +118,16 @@ def admin_logout():
 
     return redirect(url_for('home_blue.index'))
 
-@home_blue.route('/admin')
 @adminLogRequired
+@home_blue.route('/admin')
 def admin():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     return render_template('admin/index.html', admin=admin)
+
+@adminLogRequired
+@home_blue.route('/admin_profile')
+def admin_profile():
+    admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
+    return render_template('admin/profile.html', admin=admin)
+
+

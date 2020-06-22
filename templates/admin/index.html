@@ -17,7 +17,7 @@
 
 {% block body %}
 <div class="jumbotron">
-    <h1>Hello, <a href="#profile">{{ admin.name }}</a>!</h1>
+    <h1>Hello, <a href="{{ url_for('home_blue.admin_profile') }}">{{ admin.name }}</a>!</h1>
     <p class="info">这里是网站的管理员界面, 管理员界面是主要管理视图。通过此界面, 管理员(Admin)可管理用户, 设置和分配资源, 以及定义权限和访问级别.
 
         顶部导航栏左侧: 是返回主界面的按钮, 切换主界面与此页面(不必每次输入管理员的账号密码);

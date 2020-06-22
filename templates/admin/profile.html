@@ -1,0 +1,193 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<style>
+#avator{ border-radius: 50%; display: block;
+    height: auto; max-width: 100%; }
+
+.first-box ul li a{ font-size: 14px; margin-left: 14px; }
+
+#change_name_0{ display: none; }
+#change_name_1{ display: none; }
+#change_name_2{ display: none; }
+
+#change_pwd_0{ display: none; margin-top: 5px; }
+#change_pwd_1{ display: none; margin-top: 5px; }
+#change_pwd_2{ display: none; margin-top: 5px; }
+
+#name{ font-size: 36px; width: 175px;
+    margin-top: 20px; margin-bottom: 10px;
+    font-family: inherit; font-weight: 500;
+    line-height: 1.1; color: inherit; }
+
+#save_name{ display: none; }
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container first-box">
+    <input id="_name" type="hidden" value="{{ admin.name }}">
+    <div class="row">
+        <div class="col-md-3 col-xs-12">
+            <img id="avator" src="{{ url_for('static', filename=admin.avator) }}" alt="avator">
+        </div>
+        <div class="col-md-9 col-xs-12">
+            <ul>
+                <li id="change_name"><h1>{{ admin.name }}<a href="#">修改名称</a></h1></li>
+                <li id="save_name"><input id="name" type="text" value="{{ admin.name }}"><a href="#">保存改动</a></input>
+                </li>
+                <li>
+                    <p id="change_name_0" class="error">
+                        <span>无效用户名!</span>
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </p>
+                    <p id="change_name_2" class="error">
+                        <span>已被使用!</span>
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </p>
+                    <p id="change_name_1" class="success">
+                        <span>修改成功!</span>
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </p>
+                </li>
+                <li>
+                    <hr>
+                </li>
+                <li><h4>注册时间: {{ admin.create_time }}</h4></li>
+                <li><h4>上次登录时间: {{ admin.login_time }}</h4></li>
+                <li>
+                    <hr>
+                </li>
+                <li>
+                    <input id="old_pwd" type="password" placeholder="输入旧密码...">
+                    <input id="new_pwd" type="password" placeholder="输入新密码...">
+                    <a href="#">修改密码</a>
+                </li>
+                <li>
+                    <p id="change_pwd_0" class="error">
+                        <span>旧密码错误!</span>
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </p>
+                    <p id="change_pwd_2" class="error">
+                        <span>无效密码!</span>
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </p>
+                    <p id="change_pwd_1" class="success">
+                        <span>修改成功!</span>
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// 修改用户名
+$(document).ready(function(){
+    $("#change_name a").click(function(){
+        $("#change_name").css("display", "none");
+        $("#save_name").css("display", "inline");
+    });
+    $("#save_name a").click(function(){
+        $("#change_name").css("display", "inline");
+        $("#save_name").css("display", "none");
+
+        $.ajax({
+            data : {
+                old_name : $("#_name").val(),
+                new_name : $("#name").val()
+            },
+            type : "POST",
+            url : "/change_name"
+        })
+        .done(function(data){
+            done_texts = ["#change_name_0", "#change_name_1", "#change_name_2"];
+
+            if (data.result == 0){
+                $("#change_name_0").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#change_name_0")];
+                for (var i in done_texts){
+                    $(done_texts[i]).css("display", "none");
+                }
+            }
+            else if (data.result == 2){
+                $("#change_name_1").css("display", "inline");
+                delete done_texts[done_texts.indexOf("##change_name_1")];
+                for (var i in done_texts){
+                    $(done_texts[i]).css("display", "none");
+                }
+            }
+            else{
+                $("#change_name_1").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#change_name_1")];
+                for (var i in done_texts){
+                    $(done_texts[i]).css("display", "none");
+                }
+
+            // 局部刷新
+            $("#change_name").load(location.href+" #change_name")
+            }
+        })
+        event.preventDefault();
+    });
+});
+
+
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+/* $.ajax({
+data : {
+name : $("#_name").val(),
+old_pwd : $("#old_pwd").val(),
+new_pwd : $("#new_pwd").val()
+},
+type : "POST",
+url : "/change_pwd"
+})
+.done(function(data){
+done_texts = ["#done_text_0", "#done_text_-1", "#done_text_2"];
+
+if (data.result == 0){
+$("#done_text_0").css("display", "inline");
+delete done_texts[done_texts.indexOf("#done_text_0")];
+for (var i in done_texts){
+$(done_texts[i]).css("display", "none");
+}
+}
+else if (data.result == -1){
+$("#done_text_-1").css("display", "inline");
+delete done_texts[done_texts.indexOf("#done_text_-1")];
+for (var i in done_texts){
+$(done_texts[i]).css("display", "none");
+}
+}
+else if (data.result == 2){
+$("#done_text_2").css("display", "inline");
+delete done_texts[done_texts.indexOf("#done_text_2")];
+for (var i in done_texts){
+$(done_texts[i]).css("display", "none");
+}
+}
+else{
+/* 会执行route('/admin)的函数后跳转哦! */
+window.location.href = "admin";
+}
+})
+event.preventDefault();
+}); */

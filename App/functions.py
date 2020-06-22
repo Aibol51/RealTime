@@ -3,6 +3,7 @@ from .models import *
 from base64 import b64decode, b64encode
 from Crypto.Cipher import AES
 from urllib import parse
+from re import match
 
 AES_SECRET_KEY = 'aesJM_Yernar2020'  # 必须为16/24/32个字符
 IV = "1234567890123456"
@@ -29,3 +30,33 @@ class AES_ENCRYPT(object):
         cryptor = AES.new(self.key.encode("utf8"), self.mode, IV.encode("utf8"))
         plain_text = cryptor.decrypt(decode)
         return unpad(plain_text)
+
+############################
+############################
+############################
+
+def detection(need: str, value):
+    '''
+    :param need: 需要检测的值的类型(name, email, pwd...)
+    :param value: 需要检测的值
+    :return: True / False
+    '''
+    if need == 'name' or need == 'pwd':
+        if len(value) <= 32 and len(value) > 0:
+            for word in value:
+                if word.encode('UTF-8').isalpha() or word.encode('UTF-8').isdigit() or word is '_':
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
+    elif need == 'email':
+        email_format = r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$'
+        if match(email_format, value):
+            return True
+        else:
+            return False
+
+    else:
+        return False
