@@ -13,6 +13,7 @@
 
 #change_pwd_0{ display: none; margin-top: 5px; }
 #change_pwd_1{ display: none; margin-top: 5px; }
+#change_pwd_-1{ display: none; margin-top: 5px; }
 #change_pwd_2{ display: none; margin-top: 5px; }
 
 #name{ font-size: 36px; width: 175px;
@@ -22,12 +23,13 @@
 
 #save_name{ display: none; }
 
+
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="container first-box">
-    <input id="_name" type="hidden" value="{{ admin.name }}">
+    <input id="overall_name" type="hidden" value="{{ admin.name }}">
     <div class="row">
         <div class="col-md-3 col-xs-12">
             <img id="avator" src="{{ url_for('static', filename=admin.avator) }}" alt="avator">
@@ -55,14 +57,14 @@
                     <hr>
                 </li>
                 <li><h4>注册时间: {{ admin.create_time }}</h4></li>
-                <li><h4>上次登录时间: {{ admin.login_time }}</h4></li>
+                <li><h4>上次登录时间: {% if admin.login_time %} {{ admin.login_time }} {% else %} 首次登录 {% endif %}</h4></li>
                 <li>
                     <hr>
                 </li>
                 <li>
                     <input id="old_pwd" type="password" placeholder="输入旧密码...">
                     <input id="new_pwd" type="password" placeholder="输入新密码...">
-                    <a href="#">修改密码</a>
+                    <a href="#" id="change_pwd">修改密码</a>
                 </li>
                 <li>
                     <p id="change_pwd_0" class="error">
@@ -71,6 +73,10 @@
                     </p>
                     <p id="change_pwd_2" class="error">
                         <span>无效密码!</span>
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </p>
+                    <p id="change_pwd_-1" class="error">
+                        <span>未输入!</span>
                         <span class="glyphicon glyphicon-remove"></span>
                     </p>
                     <p id="change_pwd_1" class="success">
@@ -91,103 +97,106 @@
 {% block js %}
 <script>
 // 修改用户名
-$(document).ready(function(){
-    $("#change_name a").click(function(){
-        $("#change_name").css("display", "none");
-        $("#save_name").css("display", "inline");
-    });
-    $("#save_name a").click(function(){
-        $("#change_name").css("display", "inline");
-        $("#save_name").css("display", "none");
+$(document).on("click", "#change_name a", function(e){
+    $("#change_name").css("display", "none");
+    $("#save_name").css("display", "inline");
+});
 
+$(document).on("click", "#save_name a", function(e){
+    $("#change_name").css("display", "inline");
+    $("#save_name").css("display", "none");
+
+    $.ajax({
+        data : {
+            old_name : $("#overall_name").val(),
+            new_name : $("#name").val()
+        },
+        type : "POST",
+        url : "/change_name"
+    })
+    .done(function(data){
+        done_texts = ["#change_name_0", "#change_name_1", "#change_name_2"];
+
+        if (data.result == 0){
+            $("#change_name_0").css("display", "inline");
+            delete done_texts[done_texts.indexOf("#change_name_0")];
+            for (var i in done_texts){
+                $(done_texts[i]).css("display", "none");
+            }
+        }
+        else if (data.result == 2){
+            $("#change_name_1").css("display", "inline");
+            delete done_texts[done_texts.indexOf("##change_name_1")];
+            for (var i in done_texts){
+                $(done_texts[i]).css("display", "none");
+            }
+        }
+        else{
+            $("#overall_name").val($("#name").val());
+
+            $("#change_name_1").css("display", "inline");
+            delete done_texts[done_texts.indexOf("#change_name_1")];
+            for (var i in done_texts){
+                $(done_texts[i]).css("display", "none");
+            }
+
+        // 局部刷新
+        $("#change_name").load(location.href+" #change_name");
+        $("#_name").load(location.href+" #_name");
+        }
+    })
+    event.preventDefault();
+});
+
+
+// 修改密码
+$(document).ready(function(){
+    $("#change_pwd").click(function(){
         $.ajax({
             data : {
-                old_name : $("#_name").val(),
-                new_name : $("#name").val()
+                name : $("#overall_name").val(),
+                old_pwd : $("#old_pwd").val(),
+                new_pwd : $("#new_pwd").val()
             },
             type : "POST",
-            url : "/change_name"
+            url : "/change_pwd"
         })
         .done(function(data){
-            done_texts = ["#change_name_0", "#change_name_1", "#change_name_2"];
+            done_texts = ["#change_pwd_0", "#change_pwd_-1", "#change_pwd_1", "#change_pwd_2"];
 
             if (data.result == 0){
-                $("#change_name_0").css("display", "inline");
-                delete done_texts[done_texts.indexOf("#change_name_0")];
+                $("#change_pwd_0").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#change_pwd_0")];
                 for (var i in done_texts){
                     $(done_texts[i]).css("display", "none");
                 }
             }
+            else if (data.result == -1){
+                $("#change_pwd_-1").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#change_pwd_-1")];
+                for (var i in done_texts){
+                $(done_texts[i]).css("display", "none");
+                }
+            }
             else if (data.result == 2){
-                $("#change_name_1").css("display", "inline");
-                delete done_texts[done_texts.indexOf("##change_name_1")];
+                $("#change_pwd_2").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#change_pwd_2")];
                 for (var i in done_texts){
                     $(done_texts[i]).css("display", "none");
                 }
             }
             else{
-                $("#change_name_1").css("display", "inline");
-                delete done_texts[done_texts.indexOf("#change_name_1")];
+                $("#change_pwd_1").css("display", "inline");
+                delete done_texts[done_texts.indexOf("#change_pwd_1")];
                 for (var i in done_texts){
                     $(done_texts[i]).css("display", "none");
                 }
-
-            // 局部刷新
-            $("#change_name").load(location.href+" #change_name")
+                $("#old_pwd").val("");
+                $("#new_pwd").val("");
             }
-        })
         event.preventDefault();
-    });
+        });
+    })
 });
-
-
 </script>
 {% endblock %}
-
-
-
-
-
-
-
-
-/* $.ajax({
-data : {
-name : $("#_name").val(),
-old_pwd : $("#old_pwd").val(),
-new_pwd : $("#new_pwd").val()
-},
-type : "POST",
-url : "/change_pwd"
-})
-.done(function(data){
-done_texts = ["#done_text_0", "#done_text_-1", "#done_text_2"];
-
-if (data.result == 0){
-$("#done_text_0").css("display", "inline");
-delete done_texts[done_texts.indexOf("#done_text_0")];
-for (var i in done_texts){
-$(done_texts[i]).css("display", "none");
-}
-}
-else if (data.result == -1){
-$("#done_text_-1").css("display", "inline");
-delete done_texts[done_texts.indexOf("#done_text_-1")];
-for (var i in done_texts){
-$(done_texts[i]).css("display", "none");
-}
-}
-else if (data.result == 2){
-$("#done_text_2").css("display", "inline");
-delete done_texts[done_texts.indexOf("#done_text_2")];
-for (var i in done_texts){
-$(done_texts[i]).css("display", "none");
-}
-}
-else{
-/* 会执行route('/admin)的函数后跳转哦! */
-window.location.href = "admin";
-}
-})
-event.preventDefault();
-}); */

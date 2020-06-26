@@ -1,0 +1,65 @@
+{% extends 'admin/base.html' %}
+
+{% block head %} {% endblock %}
+
+{% block body %}
+<h2 class="sub-header">订单</h2>
+<hr>
+<button class="btn btn-info btn-lg" onclick="refresh_table()">刷新</button>
+<div class="table-responsive">
+    <table class="table table-striped" id="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>联系方式</th>
+            <th>购买数量</th>
+            <th>购买商品</th>
+            <th>发布时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in range(request_num) %}
+        <tr>
+            <td>{{ requests[i].id }}</td>
+            <td>{{ requests[i].contact }}</td>
+            <td>{{ requests[i].total }}</td>
+            <td>{% if items[i].name %} {{ items[i].name }} {% else %} 已被删除 {% endif %}</td>
+            <td>{{ requests[i].create_time }}</td>
+            <td>
+                <button class="btn btn-danger" onclick="del_req({{ requests[i].id }})">
+                    <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;删除
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// 刷新
+function refresh_table(){
+    $("#table").load(location.href+" #table");
+}
+</script>
+
+<script>
+function del_req(req_id){
+    $.ajax({
+        data : {
+            req_id : req_id
+        },
+        type : "POST",
+        url : "/del_req"
+    })
+    .done(function(data){
+        // 局部刷新
+        refresh_table();
+    })
+    event.preventDefault();
+}
+</script>
+{% endblock %}

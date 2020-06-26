@@ -1,0 +1,333 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<style>
+img{ width: 100%; }
+
+.about_content{ padding: 15px;
+    font-style: italic; font-size: 18px;
+    color: navy; text-indent: 50px; }
+
+#new_content{ display: none; }
+
+#change_company_name a{ font-size: 14px; margin-left: 14px; }
+
+#save_company_name{ display: none; }
+
+#change_company_name_0{ display: none; }
+#change_company_name_1{ display: none; }
+
+textarea{ border: 0; border-radius: 5px;
+    background-color: rgba(241,241,241,.98);
+    width: 90%; height: 40%;
+    padding: 10px; resize: none; }
+
+#change_content_0{ display: none; margin-top: 5px; }
+#change_content_1{ display: none; margin-top: 5px; }
+
+.file-container { position: relative;
+    width: 7rem; height: 6rem;
+    background: url('{{ url_for('static', filename='img/upload.png') }}') center center no-repeat;
+    background-size: 100%; margin: auto; }
+
+.file-container input { position: absolute; display: block;
+    width: 100%; height: 100%;
+    right: 0; top: 0;
+    opacity: 0; }
+
+
+
+</style>
+{% endblock %}
+
+{% block body %}
+{% macro done_text(class='', id='', value='') %}
+<p class="{{ class }}" id="{{ id }}" style="display: none;">
+    <span>{{ value }}</span>
+    <span class="glyphicon glyphicon-{% if class == success %}ok{% else %}remove{% endif %}"></span>
+</p>
+{% endmacro %}
+<div class="container first-box">
+    <div class="row">
+        <div class="col-md-12 col-xs-12 text-center" id="change_company_name"><h1>{{ company.company_name }}<a href="#">修改名称</a>
+        </h1></div>
+        <div class="col-md-12 col-xs-12 text-center" id="save_company_name">
+            <input id="new_company_name" type="text" value="{{ company.company_name }}"><a href="#">保存改动</a>
+        </div>
+        <div class="col-md-12 col-xs-12 text-center error" id="change_company_name_0">
+            <span>修改失败!</span>
+            <span class="glyphicon glyphicon-remove"></span>
+        </div>
+        <div class="col-md-12 col-xs-12 text-center success" id="change_company_name_1">
+            <span>修改成功!</span>
+            <span class="glyphicon glyphicon-ok"></span>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+        <div class="row placeholders text-center">
+            <form id="uploadForm1" enctype="multipart/form-data">
+                <div class="col-xs-6 col-sm-4 placeholder">
+                    <img src="{{ url_for('static', filename=company.img1) }}"
+                         class="img-responsive company-img" alt="company-img">
+                    <div class="file-container">
+                        <input id="file1" type="file" name="file1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">上传图片</button>
+                    {{ done_text('error', 'up_img1_0', '上传失败!') }}
+                    {{ done_text('error', 'up_img1_-1', '不支持的图片类型!') }}
+                    {{ done_text('success', 'up_img1_1', '成功上传!') }}
+                </div>
+            </form>
+            <form id="uploadForm2" enctype="multipart/form-data">
+                <div class="col-xs-6 col-sm-4 placeholder">
+                    <img src="{{ url_for('static', filename=company.img2) }}"
+                         class="img-responsive company-img" alt="company-img">
+                    <div class="file-container">
+                        <input id="file2" type="file" name="file2">
+                    </div>
+                    <button type="submit" class="btn btn-primary">上传图片</button>
+                    {{ done_text('error', 'up_img2_0', '上传失败!') }}
+                    {{ done_text('error', 'up_img2_-1', '不支持的图片类型!') }}
+                    {{ done_text('success', 'up_img2_1', '成功上传!') }}
+                </div>
+            </form>
+            <form id="uploadForm3" enctype="multipart/form-data">
+                <div class="col-xs-6 col-sm-4 placeholder">
+                    <img src="{{ url_for('static', filename=company.img3) }}"
+                         class="img-responsive company-img" alt="company-img">
+                    <div class="file-container">
+                        <input id="file3" type="file" name="file3">
+                    </div>
+                    <button type="submit" class="btn btn-primary">上传图片</button>
+                    {{ done_text('error', 'up_img3_0', '上传失败!') }}
+                    {{ done_text('error', 'up_img3_-1', '不支持的图片类型!') }}
+                    {{ done_text('success', 'up_img3_1', '成功上传!') }}
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+        <div class="col-md-12 col-xs-12" id="change_company_content">
+            <button class="btn btn-primary btn-lg">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+            <p class="error" id="change_content_0">
+                <span>修改失败!</span>
+                <span class="glyphicon glyphicon-remove"></span>
+            </p>
+            <p class="success" id="change_content_1">
+                <span>修改成功!</span>
+                <span class="glyphicon glyphicon-ok"></span>
+            </p>
+        </div>
+        <div class="col-md-12 col-xs-12"><br></div>
+        <div class="col-md-12 col-xs-12 about_content" id="old_content">{{ company.content }}</div>
+        <div class="col-md-12 col-xs-12 about_content text-center" id="new_content">
+            <textarea name="about_content">{{ company.content }}</textarea>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <hr>
+        </div>
+        <div class="text-center" style="color: darkgray;"> ©2020 Yernar.T Version.0.0.1</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// 修改公司名称
+$(document).on("click", "#change_company_name a", function(e){
+    $("#change_company_name").css("display", "none");
+    $("#save_company_name").css("display", "inline");
+});
+$(document).on("click", "#save_company_name a", function(e){
+    $("#change_company_name").css("display", "inline");
+    $("#save_company_name").css("display", "none");
+
+    $.ajax({
+        data : {
+            new_company_name : $("#new_company_name").val()
+        },
+        type : "POST",
+        url : "/change_company_name"
+    })
+    .done(function(data){
+        if (data.result == 0){
+            $("#change_company_name_0").css("display", "inline");
+            $("#change_company_name_1").css("display", "none");
+        }
+        else{
+            $("#change_company_name_0").css("display", "none");
+            $("#change_company_name_1").css("display", "inline");
+
+        // 局部刷新
+        $("#change_company_name").load(location.href+" #change_company_name");
+        }
+    })
+    event.preventDefault();
+});
+
+// 修改公司描述
+$(document).on("click", "#change_company_content button", function(e){
+    if ($("#change_company_content button span").attr("class") == "glyphicon glyphicon-pencil"){
+        $("#change_company_content button span").removeClass("glyphicon glyphicon-pencil");
+        $("#change_company_content button span").addClass("glyphicon glyphicon-file");
+
+        $("#new_content").css("display", "inline");
+        $("#old_content").css("display", "none");
+    }
+    else{
+        $("#change_company_content button span").removeClass("glyphicon glyphicon-file");
+        $("#change_company_content button span").addClass("glyphicon glyphicon-pencil");
+
+        $("#new_content").css("display", "none");
+        $("#old_content").css("display", "inline");
+
+    $.ajax({
+        data : {
+            new_company_content : $("#new_content textarea").val()
+        },
+        type : "POST",
+        url : "/change_company_content"
+    })
+    .done(function(data){
+        if (data.result == 0){
+            $("#change_content_0").css("display", "inline");
+            $("#change_content_1").css("display", "none");
+        }
+        else{
+            $("#change_content_0").css("display", "none");
+            $("#change_content_1").css("display", "inline");
+
+        // 局部刷新
+        $("#old_content").load(location.href+" #old_content");
+        }
+    })
+    event.preventDefault();
+    }
+});
+
+// 上传图片
+$(document).on("submit", "#uploadForm1", function(e){
+		var formData = new FormData();  //创建表单对象
+
+		// 添加要传的数据放到 formData 对象里
+		formData.append("img1", document.getElementById("file1").files[0]);  //这个file就是传到php里的$_FILE['file'];
+
+		$.ajax({
+			type: "POST",
+			sync: false,
+			url: "/upload_photo",
+			data: formData,
+			cache: false,
+			processData: false,
+			contentType: false,
+    })
+    .done(function(data){
+        if (data.result == 1){
+            $("#up_img1_0").css("display", "none");
+            $("#up_img1_1").css("display", "block");
+            $("#up_img1_-1").css("display", "none");
+
+            // 更换img的src属性, 因为路径没有变, 导致局部刷新不会刷新图片的!
+            var currentSrc = $("#uploadForm1 div img").attr("src");
+            d = new Date();
+            $("#uploadForm1 div img").attr("src", currentSrc+"?"+d.getTime());
+        }
+        else if (data.result == 0){
+            $("#up_img1_0").css("display", "block");
+            $("#up_img1_1").css("display", "none");
+            $("#up_img1_-1").css("display", "none");
+        }
+        else{
+            $("#up_img1_0").css("display", "none");
+            $("#up_img1_1").css("display", "none");
+            $("#up_img1_-1").css("display", "block");
+         }
+    })
+    event.preventDefault();
+});
+
+$(document).on("submit", "#uploadForm2", function(e){
+    var formData = new FormData();  //创建表单对象
+
+		// 添加要传的数据放到 formData 对象里
+		formData.append("img2", document.getElementById("file2").files[0]);  //这个file就是传到php里的$_FILE['file'];
+
+		$.ajax({
+			type: "POST",
+			sync: false,
+			url: "/upload_photo",
+			data: formData,
+			cache: false,
+			processData: false,
+			contentType: false,
+    })
+    .done(function(data){
+        if (data.result == 1){
+            $("#up_img2_0").css("display", "none");
+            $("#up_img2_1").css("display", "block");
+            $("#up_img2_-1").css("display", "none");
+
+            // 更换img的src属性, 因为路径没有变, 导致局部刷新不会刷新图片的!
+            var currentSrc = $("#uploadForm2 div img").attr("src");
+            d = new Date();
+            $("#uploadForm2 div img").attr("src", currentSrc+"?"+d.getTime());
+        }
+        else if (data.result == 0){
+            $("#up_img2_0").css("display", "block");
+            $("#up_img2_1").css("display", "none");
+            $("#up_img2_-1").css("display", "none");
+        }
+        else{
+            $("#up_img2_0").css("display", "none");
+            $("#up_img2_1").css("display", "none");
+            $("#up_img2_-1").css("display", "block");
+         }
+    })
+    event.preventDefault();
+});
+
+$(document).on("submit", "#uploadForm3", function(e){
+    var formData = new FormData();  //创建表单对象
+
+		// 添加要传的数据放到 formData 对象里
+		formData.append("img3", document.getElementById("file3").files[0]);  //这个file就是传到php里的$_FILE['file'];
+
+		$.ajax({
+			type: "POST",
+			sync: false,
+			url: "/upload_photo",
+			data: formData,
+			cache: false,
+			processData: false,
+			contentType: false,
+    })
+    .done(function(data){
+        if (data.result == 1){
+            $("#up_img3_0").css("display", "none");
+            $("#up_img3_1").css("display", "block");
+            $("#up_img3_-1").css("display", "none");
+
+            // 更换img的src属性, 因为路径没有变, 导致局部刷新不会刷新图片的!
+            var currentSrc = $("#uploadForm3 div img").attr("src");
+            d = new Date();
+            $("#uploadForm3 div img").attr("src", currentSrc+"?"+d.getTime());
+        }
+        else if (data.result == 0){
+            $("#up_img3_0").css("display", "block");
+            $("#up_img3_1").css("display", "none");
+            $("#up_img3_-1").css("display", "none");
+        }
+        else{
+            $("#up_img3_0").css("display", "none");
+            $("#up_img3_1").css("display", "none");
+            $("#up_img3_-1").css("display", "block");
+         }
+    })
+    event.preventDefault();
+});
+</script>
+{% endblock %}

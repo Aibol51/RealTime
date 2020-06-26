@@ -22,11 +22,25 @@ class Item(db.Model):
     img = db.Column(db.String(64), default='img/default_item.png')
     detail_info = db.Column(db.Text, default='None info...')
     view_num = db.Column(db.Integer, default=0)
+    requests = db.relationship('Request', backref='requests')
+    create_time = db.Column(db.String(32), nullable=False,
+                            default=str(datetime.now())[:str(datetime.now()).rfind('.'):])
+
+
+class Request(db.Model):
+    __tablename__ = 'request'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    contact = db.Column(db.String(64), nullable=False)
+    total = db.Column(db.Integer, nullable=False)
+    objective_item = db.Column(db.Integer, db.ForeignKey('item.id'))
     create_time = db.Column(db.String(32), nullable=False,
                             default=str(datetime.now())[:str(datetime.now()).rfind('.'):])
 
 class About(db.Model):
     __tablename__ = 'about'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    company_name = db.Column(db.String(64), nullable=False)
+    img1 = db.Column(db.String(64), nullable=False)
+    img2 = db.Column(db.String(64), nullable=False)
+    img3 = db.Column(db.String(64), nullable=False)
     content = db.Column(db.Text)
-

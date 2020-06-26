@@ -13,6 +13,10 @@
 #done_text_1{  float: left; display: none; }
 
 #done_text_0{  float: left; display: none; }
+
+.detail_info{ padding: 15px;
+    font-style: italic; font-size: 18px;
+    color: navy; text-indent: 50px; }
 </style>
 {% endblock %}
 
@@ -26,19 +30,20 @@
             <hr>
         </div>
         <div class="col-md-4 col-xs-12">
-            <a target="_blank" href="{{ url_for('static', filename='img/default_item.png') }}">
-                <img class="img-thumbnail" src="{{ url_for('static', filename='img/default_item.png') }}"
+            <a target="_blank" href="{{ url_for('static', filename=item.img) }}">
+                <img class="img-thumbnail" src="{{ url_for('static', filename=item.img) }}"
                      alt="item-img">
             </a>
         </div>
         <div class="col-md-8 col-xs-12">
+            <input type="hidden" value="{{ item.id }}" id="item_id">
             <ul id="item-info">
-                <li>Aтуы: 商品名称</li>
-                <li>Бағасы: 999￥</li>
-                <li id="max_total">Қалған саны: 35</li>
+                <li>Aтуы: {{ item.name }}</li>
+                <li>Бағасы: {{ item.price }}тг</li>
+                <li id="max_total">Қалған саны: {{ item.total }}</li>
                 <li>
-                    <span>Енгізілген уақыт: 2 күн бұрын&nbsp;</span>
-                    <span id="view_num" class="glyphicon glyphicon-eye-open">104</span>
+                    <span>Енгізілген уақыт: {{ item.create_time }}&nbsp;</span>
+                    <span id="view_num" class="glyphicon glyphicon-eye-open">{{ item.view_num }}</span>
                 </li>
                 <li>
                     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
@@ -104,20 +109,7 @@
         <div class="col-md-12 col-xs-12">
             <hr>
         </div>
-        <div class="col-md-12 col-xs-12">
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-            产品描述...产品描述...产品描述...产品描述...产品描述...产品描述...
-        </div>
+        <div class="col-md-12 col-xs-12 detail_info">{{ item.detail_info }}</div>
         <div class="col-md-12 col-xs-12">
             <hr>
         </div>
@@ -155,7 +147,8 @@ $(document).ready(function(){
         $.ajax({
             data : {
                 contact : $("#contact").val(),
-                total : $("#total").val()
+                total : $("#total").val(),
+                item_id : $("#item_id").val()
             },
             type : "POST",
             url : "/seed_request"

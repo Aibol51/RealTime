@@ -1,0 +1,182 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+<style>
+.sub-header a{ font-size: 18px; font-family: cursive; }
+
+.file-container { position: relative;
+    width: 7rem; height: 6rem;
+    background: url('{{ url_for('static', filename='img/upload.png') }}') center center no-repeat;
+    background-size: 100%; }
+
+.file-container input { position: absolute; display: block;
+    width: 100%; height: 100%;
+    right: 0; top: 0;
+    opacity: 0; }
+
+#myModal label{ font-size: 16px; }
+
+#myModal textarea{ width: 100%; height: 25%; }
+
+.done_text{ display: inline; font-size: 18px; }
+.done_text span { font-size: 14px; }
+
+
+</style>
+{% endblock %}
+
+{% block body %}
+{% macro done_text(class='', id='', value='') %}
+<p class="{{ class }}" id="{{ id }}" style="display: none;">
+    <span>{{ value }}</span>
+    <span class="glyphicon glyphicon-{% if class == success %}ok{% else %}remove{% endif %}"></span>
+</p>
+{% endmacro %}
+<h2 class="sub-header">商品
+    <!-- Button trigger modal -->
+    <a data-toggle="modal" data-target="#myModal">
+        添加<span class="glyphicon glyphicon-plus"></span>
+    </a>
+    {% if done_text2 %}
+    <p class="done_text {% if done_text2 == '添加成功!' %}success{% else %}error{% endif %}">
+        {{ done_text2 }}
+        <span class="{% if done_text2 == '添加成功!' %}glyphicon glyphicon-ok{% else %}glyphicon glyphicon-remove{% endif %}"></span>
+    </p>
+    {% endif %}
+    <hr>
+    <button class="btn btn-info btn-lg" onclick="refresh_table()">刷新</button>
+    <form method="POST" enctype="multipart/form-data">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">添加商品</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="add_item_name">名称</label>
+                            <input type="text" class="form-control" name="add_item_name" placeholder="">
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="add_item_price">价格</label>
+                            <input type="text" name="add_item_price" class="form-control" placeholder="">
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="add_item_total">库存总数</label>
+                            <input type="text" name="add_item_total" class="form-control" placeholder="">
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="add_item_img">图片</label>
+                            <div class="file-container">
+                                <input id="add_item_img" type="file" name="add_item_img">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label for="add_item_detail_info">描述</label>
+                            <textarea name="add_item_detail_info" id="add_item_detail_info" cols="30"
+                                      rows="10"></textarea>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" id="add" class="btn btn-primary">确认添加</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</h2>
+<div class="table-responsive">
+    <table class="table table-striped" id="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>价格</th>
+            <th>剩余数量</th>
+            <th>图片</th>
+            <th>介绍</th>
+            <th>浏览量</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.price }}тг</td>
+            <td>{{ item.total }}</td>
+            <td><img style="width: 100px;" src="{{ url_for('static', filename=item.img) }}" alt="item"></td>
+            <td><!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2">
+                    描述
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">商品描述</h4>
+                            </div>
+                            <div class="modal-body">
+                                {{ item.detail_info }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                <button type="button" class="btn btn-primary">保存改动</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>{{ item.view_num }}</td>
+            <td>{{ item.create_time }}</td>
+            <td>
+                <button class="btn btn-danger" onclick="del_item({{ item.id }})">
+                    <span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;删除
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// 刷新
+function refresh_table(){
+    $("#table").load(location.href+" #table");
+}
+</script>
+
+<script>
+function del_item(item_id){
+    $.ajax({
+        data : {
+            item_id : item_id
+        },
+        type : "POST",
+        url : "/del_item"
+    })
+    .done(function(data){
+        // 局部刷新
+        refresh_table();
+    })
+    event.preventDefault();
+}
+</script>
+{% endblock %}

@@ -2,46 +2,33 @@
 
 {% block head %}
 <style>
-#item-view li{ display: inline-block; margin: 5px 30px 30px 5px; }
+#item p{ width: 70%; margin-bottom: 35px; }
 
-#item-view li .container{ width: auto; }
+#item small{ float: right; }
 
-.item-info{ max-width: 180px;  border-style: groove; }
-
-.item-img{ border: 1px solid #ccc; }
-
-.item-img:hover { border: 1px solid #777; }
-
-.item-img img { width: 148px; height: 148px; }
-
-.item-img .desc { padding: 15px;
-    font-style: italic; font-size: 18px;
-    text-align: center; color: navy; }
-
-.item-name{ margin-top: 15px; }
-
+ul{ padding: 0; }
 </style>
 {% endblock %}
 
 {% block body %}
-<ul id="item-view">
-    {% for item in range(20) %}
+<ul>
     <li>
-        <div class="container">
-            <div class="row item-info">
-                <div class="col-md-12 col-xs-12 item-img">
-                    <a href="{{ url_for('home_blue.detail', item_id=item) }}">
-                        <img src="{{ url_for('static', filename='img/default_item.png') }}" alt="item-img">
-                    </a>
-                    <div class="desc">999￥</div>
-                </div>
-                <div class="col-md-12 col-xs-12 text-center item-name"><a href="#">商品名称</a></div>
-                <div class="col-md-12 col-xs-12 text-center"><hr></div>
-                <div class="col-md-6 col-xs-6"><small>21:06:54</small></div>
-                <div class="col-md-3 col-xs-6"><small id="view_num" class="glyphicon glyphicon-eye-open">123</small></div>
+        <div class="row placeholders">
+            {% for item in items %}
+            <div class="col-xs-6 col-sm-3 placeholder" id="item">
+                <a href="{{ url_for('home_blue.detail', item_id=item.id) }}">
+                    <img src="{{ url_for('static', filename=item.img) }}"
+                         width="200" height="200" class="img-responsive" alt="item-img">
+                </a>
+                <h4><a href="{{ url_for('home_blue.detail', item_id=item.id) }}">{{ item.name }}</a></h4>
+                <p>
+                    <span class="text-muted">{{ item.price }}тг</span>
+                    <small id="view_num" class="text-muted glyphicon glyphicon-eye-open">{{ item.view_num }}</small>
+                </p>
             </div>
+            {% endfor %}
         </div>
     </li>
-    {% endfor %}
+
 </ul>
 {% endblock %}

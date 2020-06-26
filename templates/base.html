@@ -92,7 +92,7 @@ body{ background-color: aliceblue; }
                     <!--                    </ul>-->
                 </li>
             </ul>
-            <form class="navbar-form navbar-right">
+            <form id="search_bar" class="navbar-form navbar-right">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Зат атуы...">
                 </div>
@@ -102,6 +102,30 @@ body{ background-color: aliceblue; }
     </div><!-- /.container-fluid -->
 </nav>
 <div id="main">{% block body %} {% endblock %}</div>
-{% block js %} {% endblock %}
+
+<script>
+$(document).on("submit", "#search_bar", function(e){
+    alert(" Уақытша жұмыс жасамайды! ");
+    /* $.ajax({
+			type: "POST",
+			url: "/search",
+			data : { search_text : $("#search_bar input").val() },
+    })
+    .done(function(data){
+        if (data.result == "fail"){
+            alert(" 搜索失败! ");
+         }
+        else{
+            // alert(data.result);
+            console.log(data.result);
+        }
+    })
+    event.preventDefault(); */
+});
+</script>
+
+{% block js %}
+
+{% endblock %}
 </body>
 </html>

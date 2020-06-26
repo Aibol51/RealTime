@@ -4,6 +4,7 @@ from base64 import b64decode, b64encode
 from Crypto.Cipher import AES
 from urllib import parse
 from re import match
+import string
 
 AES_SECRET_KEY = 'aesJM_Yernar2020'  # 必须为16/24/32个字符
 IV = "1234567890123456"
@@ -41,13 +42,16 @@ def detection(need: str, value):
     :param value: 需要检测的值
     :return: True / False
     '''
+    ALLOWED_WORD = string.ascii_letters + string.digits + '_'
+
     if need == 'name' or need == 'pwd':
         if len(value) <= 32 and len(value) > 0:
             for word in value:
-                if word.encode('UTF-8').isalpha() or word.encode('UTF-8').isdigit() or word is '_':
-                    return True
+                if word in ALLOWED_WORD:
+                    pass
                 else:
                     return False
+            return True
         else:
             return False
 
@@ -60,3 +64,9 @@ def detection(need: str, value):
 
     else:
         return False
+
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'PNG', 'JPG', 'gif', 'GIF'])
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
