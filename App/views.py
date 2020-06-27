@@ -28,6 +28,7 @@ def init_home_blue(app):
 @home_blue.route('/')
 def index():
     items = Item.query.filter(Item.total >= 1).all()
+    calc_view() # 计算网页浏览量
     return render_template('index.html', items=items)
 
 @home_blue.route('/search', methods=['POST'])
@@ -46,16 +47,21 @@ def search():
 
 @home_blue.route('/reg_log')
 def reg_log():
+    calc_view()  # 计算网页浏览量
     return render_template('reg_log.html')
 
 @home_blue.route('/about')
 def about():
     company = About.query.all()[0]
+    calc_view()  # 计算网页浏览量
     return render_template('about.html', company=company)
 
 @home_blue.route('/detail/<item_id>')
 def detail(item_id):
     item = Item.query.filter(Item.id == item_id).first()
+    calc_view()  # 计算网页浏览量
+    item.view_num += 1
+    db.session.commit()
     return render_template('detail.html', item=item)
 
 # 申请购买(详情页面内)
@@ -224,6 +230,7 @@ def admin_logout():
 def admin():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     request_num = Request.query.count()
+    calc_view()  # 计算网页浏览量
     return render_template('admin/index.html', admin=admin, request_num=request_num)
 
 @adminLogRequired
@@ -231,6 +238,7 @@ def admin():
 def admin_profile():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     request_num = Request.query.count()
+    calc_view()  # 计算网页浏览量
     return render_template('admin/profile.html', admin=admin, request_num=request_num)
 
 @adminLogRequired
@@ -239,6 +247,7 @@ def admin_about():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     request_num = Request.query.count()
     company = About.query.all()[0]
+    calc_view()  # 计算网页浏览量
     return render_template('admin/about.html', admin=admin, company=company, request_num=request_num)
 
 @adminLogRequired
@@ -275,6 +284,7 @@ def item():
     admin = Admin.query.filter(Admin.id == session.get('admin_login')).first()
     request_num = Request.query.count()
     items = Item.query.all()
+    calc_view()  # 计算网页浏览量
 
     if request.method == 'GET':
         return render_template('admin/item.html', admin=admin, items=items, request_num=request_num)
@@ -322,6 +332,7 @@ def request_page():
     items = []
     for i in requests:
         items.append(Item.query.filter(Item.id == i.objective_item).first())
+    calc_view()  # 计算网页浏览量
     return render_template('admin/request_page.html', admin=admin, requests=requests, request_num=request_num, items=items)
 
 @adminLogRequired

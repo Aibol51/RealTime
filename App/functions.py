@@ -5,6 +5,7 @@ from Crypto.Cipher import AES
 from urllib import parse
 from re import match
 import string
+from datetime import datetime
 
 AES_SECRET_KEY = 'aesJM_Yernar2020'  # 必须为16/24/32个字符
 IV = "1234567890123456"
@@ -70,3 +71,30 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'PNG', 'JPG', 'gif', 'GIF'])
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+def calc_view():
+    # 获取用户的IP地址
+    statistic = Statistics.query.filter(Statistics.ip_addr == request.remote_addr).first()
+    if statistic: # 此IP地址的上次浏览时间和现在时间做比较, >=1 天的话浏览量+1并把上次浏览时间改为当前时间;
+        if (datetime.strptime(str(datetime.now()), '%Y-%m-%d') - datetime.strptime(statistic.create_time, '%Y-%m-%d')).days >= 1:
+            statistic.create_time = str(datetime.now())
+            visit = Visit.query.filter(Visit.id == 1).first()
+            visit.visit_num += 1
+            db.session.commit()
+    else:
+        statistic = Statistics()
+        statistic.ip_addr = request.remote_addr
+        db.session.add(statistic)
+
+        visit = Visit.query.filter(Visit.id == 1).first()
+        visit.visit_num += 1
+        db.session.commit()
+
+    # 每隔3天清理长时间未登录的IP地址
+    if (datetime.strptime(str(datetime.now()), '%Y-%m-%d') -
+        datetime.strptime((Visit.query.filter(Visit.id == 1).first()).clean_time, '%Y-%m-%d')).days >= 3:
+
+        for addr in range(Statistics.query.all()):
+        # IP地址两天未登录就删掉
+            if (datetime.strptime(str(datetime.now()), '%Y-%m-%d') - datetime.strptime(addr.create_time, '%Y-%m-%d')).days >= 2:
+                db.session.delete(addr); db.session.commit();

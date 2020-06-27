@@ -12,6 +12,7 @@ class Admin(db.Model):
     create_time = db.Column(db.String(32), nullable=False,
                             default=str(datetime.now())[:str(datetime.now()).rfind('.'):])
     login_time = db.Column(db.String(32))
+    superuser = db.Column(db.Integer, default=0)
 
 class Item(db.Model):
     __tablename__ = 'item'
@@ -44,3 +45,17 @@ class About(db.Model):
     img2 = db.Column(db.String(64), nullable=False)
     img3 = db.Column(db.String(64), nullable=False)
     content = db.Column(db.Text)
+
+class Statistics(db.Model):
+    __tablename__ = 'statistics'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ip_addr = db.Column(db.String(64), nullable=False)
+    create_time = db.Column(db.String(32), nullable=False,
+                            default=str(datetime.now())[:str(datetime.now()).find(' ')])
+
+class Visit(db.Model):
+    __tablename__ = 'visit'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    visit_num = db.Column(db.Integer)
+    clean_time = db.Column(db.String(32), nullable=False,
+                           default=str(datetime.now())[:str(datetime.now()).find(' ')])
