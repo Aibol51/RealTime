@@ -124,7 +124,7 @@ function change_total(method){
     var total = parseInt($("#total").val());
 
     if (method == "less"){
-        if (total == 1){ alert("Ең аз мөлшер"); }
+        if (total <= 1){ alert("Ең аз мөлшер"); $("#total").val("1"); }
         else{
             total--;
             $("#total").val(total);
@@ -133,7 +133,7 @@ function change_total(method){
     else{
         var max_total = $("#max_total").text();
         max_total = parseInt(max_total.slice(max_total.lastIndexOf(" ")));
-        if (total == max_total){ alert("Ең көп мөлшер"); }
+        if (total >= max_total){ alert("Ең көп мөлшер"); $("#total").val(max_total); }
         else{
             total++;
             $("#total").val(total);

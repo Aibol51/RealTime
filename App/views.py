@@ -27,6 +27,14 @@ def init_home_blue(app):
 
 @home_blue.route('/')
 def index():
+    # for i in range(30):
+    #     item = Item()
+    #     item.name = 'test'+str(i)
+    #     item.price = randint(100, 5000)
+    #     item.total = randint(1, 600)
+    #     db.session.add(item); db.session.commit()
+
+
     items = Item.query.filter(Item.total >= 1).all()
     calc_view() # 计算网页浏览量
     return render_template('index.html', items=items)
